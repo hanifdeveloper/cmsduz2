@@ -20,7 +20,7 @@ class dbweb_cmsduz extends Database {
         return (!empty($lampiran) && file_exists($this->dir_upload_lampiran.$path.$lampiran)) ? $this->link_file_lampiran.$path.$lampiran : $this->link_file_lampiran.'/'.$no_lampiran;
     }
 
-    private function getCustomList($modul, $dataArray) {
+    private function getCustomList($dataArray, $modul = '') {
         $result = [];
         foreach ($dataArray['value'] as $key => $value) {
             $result[$key] = $value;
@@ -98,6 +98,12 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    public function getFormMenu($id = '') {
+        $result['form'] = $this->getDataTabel('tref_menu', ['id_menu', $id]);
+        $result['title'] = empty($id) ? 'Tambah Menu' : 'Edit Menu';
+        return $result;
+    }
+
     public function getFormCategory($id = '') {
         $result['form'] = $this->getDataTabel('tref_category', ['id_category', $id]);
         $result['title'] = empty($id) ? 'Tambah Kategori' : 'Edit Kategori';
@@ -136,6 +142,30 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    public function getListMenu($input) {
+        $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'limit' => 5], $input);
+        $page = $params['page'];
+        $cari = '%'.$params['cari'].'%';
+        $q_from = 'tref_menu WHERE (nemu_name LIKE ?)';
+        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from;
+        $q_value = 'SELECT * FROM '.$q_from.' ORDER BY id_menu DESC';
+        $idKey = [$cari, $slug];
+        $limit = $params['limit'];
+        $position = ($page - 1) * $limit;
+        $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
+        $dataArray = $this->getData($q_value.' LIMIT '.$position.','.$limit, $idKey);
+        $result['number'] = $position + 1;
+        $result['page'] = $page;
+        $result['limit'] = $limit;
+        $result['count'] = $dataCount['value']['jumlah'];
+        $result['list'] = $this->getCustomList($dataArray);
+        $result['title'] = 'Daftar Menu';
+        $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' menu';
+        $result['query'] = $dataArray['query'];
+        $result['query'] = '';
+        return $result;
+    }
+
     public function getListCategory($input) {
         $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'slug' => '', 'limit' => 5], $input);
         $page = $params['page'];
@@ -153,7 +183,7 @@ class dbweb_cmsduz extends Database {
         $result['page'] = $page;
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
-        $result['list'] = $this->getCustomList('kategori', $dataArray);
+        $result['list'] = $this->getCustomList($dataArray, 'kategori');
         $result['title'] = 'Daftar Kategori';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' kategori';
         $result['query'] = $dataArray['query'];
@@ -187,7 +217,7 @@ class dbweb_cmsduz extends Database {
         $result['page'] = $page;
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
-        $result['list'] = $this->getCustomList('berita', $dataArray);
+        $result['list'] = $this->getCustomList($dataArray, 'berita');
         $result['title'] = 'Daftar Berita';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' berita';
         $result['query'] = $dataArray['query'];
@@ -213,7 +243,7 @@ class dbweb_cmsduz extends Database {
         $result['page'] = $page;
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
-        $result['list'] = $this->getCustomList('album', $dataArray);
+        $result['list'] = $this->getCustomList($dataArray, 'album');
         $result['title'] = 'Daftar Album';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' album';
         $result['query'] = $dataArray['query'];
@@ -238,7 +268,7 @@ class dbweb_cmsduz extends Database {
         $result['page'] = $page;
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
-        $result['list'] = $this->getCustomList('galeri', $dataArray);
+        $result['list'] = $this->getCustomList($dataArray, 'galeri');
         $result['title'] = 'Daftar Galeri';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' gambar';
         $result['query'] = $dataArray['query'];

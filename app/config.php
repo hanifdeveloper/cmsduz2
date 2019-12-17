@@ -34,6 +34,7 @@ return array(
                 'id_news' => date('YmdHis'),
                 'id_album' => date('YmdHis'),
                 'id_gallery' => date('YmdHis'),
+                'id_menu' => date('YmdHis'),
                 'news_date' => date('Y-m-d'),
                 'datetime' => date('Y-m-d H:i:s'),
                 'news_publish' => 'unpublish',
@@ -48,6 +49,16 @@ return array(
                     'validate' => array(
                         array('title' => 'Maaf', 'text' => 'Username atau Password salah..', 'type' => 'warning'),
                         array('title' => 'Sukses', 'text' => 'Login berhasil ...', 'type' => 'info'),
+                    ),
+                ),
+                'menu' => array(
+                    'simpan' => array(
+                        array('title' => 'Maaf', 'text' => 'Menu gagal disimpan', 'type' => 'error'),
+                        array('title' => 'Sukses', 'text' => 'Menu telah disimpan', 'type' => 'success'),
+                    ),
+                    'hapus' => array(
+                        array('title' => 'Maaf', 'text' => 'Menu gagal dihapus', 'type' => 'error'),
+                        array('title' => 'Sukses', 'text' => 'Menu telah dihapus', 'type' => 'success'),
                     ),
                 ),
                 'kategori' => array(
