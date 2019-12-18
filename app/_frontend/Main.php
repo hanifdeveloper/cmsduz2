@@ -24,8 +24,6 @@ class Main {
     }
 
     public function index() {
-        // $data = $this->db->getFormBerita();
-        // $data = $this->db->getTabelBerita(['page' => 1]);
         $this->app->showView('index');
         // $data['breakingNews'] = $this->db->getBreakingNews();
         // $data['popularNews'] = $this->db->getPopularNews();

@@ -2,9 +2,9 @@
     <!-- Wrapper -->
     <div id="wrapper" class="wide">
         
-        <!-- Header -->
-        <?php $this->subView('main/header'); ?>
         <?php $widget = $this->getModule('widget'); ?>
+        <!-- Header -->
+        <?php $widget->header(); ?>
                     
         <!-- Container -->
         <div class="container">
@@ -57,7 +57,7 @@
         </div>
         
         <!-- Footer -->
-        <?php $this->subView('main/footer'); ?>
+        <?php $widget->footer(); ?>
         
     </div>
 

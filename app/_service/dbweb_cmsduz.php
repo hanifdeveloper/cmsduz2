@@ -268,7 +268,7 @@ class dbweb_cmsduz extends Database {
         $result['title'] = 'Daftar Berita';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' berita';
         $result['query'] = $dataArray['query'];
-        $result['query'] = '';
+        // $result['query'] = '';
         return $result;
     }
 
@@ -328,32 +328,32 @@ class dbweb_cmsduz extends Database {
      */
 
     public function getBreakingNews() {
-        $result = $this->getListBerita(array('publish' => 'publish','limit' => 5, 'order' => 'tanggal_berita'));
+        $result = $this->getListNews(array('publish' => 'publish', 'limit' => 5, 'order' => 'news_date'));
         return $result['list'];
     }
 
     public function getPopularNews() {
-        $result = $this->getListBerita(array('publish' => 'publish', 'limit' => 5, 'order' => 'dibaca_berita'));
+        $result = $this->getListNews(array('publish' => 'publish', 'limit' => 5, 'order' => 'news_viewer'));
         return $result['list'];
     }
 
     public function getRelatedNews($tag) {
-        $result = $this->getListBerita(array('publish' => 'publish', 'tag' => implode(',', $tag), 'limit' => 5));
+        $result = $this->getListNews(array('publish' => 'publish', 'tag' => implode(',', $tag), 'limit' => 5));
         return $result['list'];
     }
 
     public function getDetailNews($slug) {
         $cari = explode('.', $slug);
-        $result = $this->getListBerita(array('slug' => $cari[0], 'publish' => 'publish', 'limit' => 1));
+        $result = $this->getListNews(array('slug' => $cari[0], 'publish' => 'publish', 'limit' => 1));
         $result = $result['list'][0];
-        $dibaca = $result['dibaca_berita'];
+        $viewer = $result['news_viewer'];
         // Update dibaca
-        $this->update('tb_berita', array('dibaca_berita' => ($dibaca + 1)), array('id_berita' => $result['id_berita']));
+        $this->update('tref_news', array('news_viewer' => ($viewer + 1)), array('id_news' => $result['id_news']));
         return $result;
     }
 
     public function getNewsByKategori($kategori) {
-        $result = $this->getListBerita(array('publish' => 'publish', 'kategori' => $kategori, 'limit' => 5));
+        $result = $this->getListNews(array('publish' => 'publish', 'kategori' => $kategori, 'limit' => 5));
         return $result['list'];
     }
 }

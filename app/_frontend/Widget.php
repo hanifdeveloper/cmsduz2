@@ -11,6 +11,15 @@ class Widget {
         // $this->app->debugResponse($_SERVER);
     }
 
+    public function header() {
+        $data['navbar'] = $this->db->getMenuNavbar();
+        $this->app->subView(__CLASS__.'/header', $data);
+    }
+
+    public function footer() {
+        $this->app->subView(__CLASS__.'/footer');
+    }
+
     public function breakingNews() {
         $data['breakingNews'] = $this->db->getBreakingNews();
         $this->app->subView(__CLASS__.'/breaking-news', $data);
