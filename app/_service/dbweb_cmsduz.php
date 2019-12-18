@@ -82,6 +82,7 @@ class dbweb_cmsduz extends Database {
                         'id' => $value['id_menu'],
                         'text' => $value['menu_name'],
                         'link' => $value['menu_link'],
+                        'disable' => $value['menu_disable'],
                     );
                     if(checkParent($menu, $value['id_menu'])){
                         $result[$index]['submenu'] = createNavbar($menu, $value['id_menu']);

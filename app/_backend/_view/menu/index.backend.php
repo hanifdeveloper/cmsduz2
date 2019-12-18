@@ -76,7 +76,7 @@
                             </div>
                             <div class="col-lg-5 col-md-5 col-sm-5">
                                 <div class="body">
-                                    <h4>Struktur Menu <a href="javascript:void(0);" class="list_area pull-right btn-update" data-toggle="tooltip" data-placement="top" title="Update Struktur" data-original-title="Update Struktur"><i class="material-icons">refresh</i></a></h4>
+                                    <h4>Struktur Menu <a href="javascript:void(0);" class="list_area pull-right btn-update" data-toggle="tooltips" data-placement="top" title="Update Struktur" data-original-title="Update Struktur"><i class="material-icons">refresh</i></a></h4>
                                     <div class="clearfix m-b-20">
                                         <div class="dd"></div>
                                     </div>

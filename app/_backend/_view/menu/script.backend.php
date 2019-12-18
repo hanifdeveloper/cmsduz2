@@ -51,6 +51,7 @@ Menu = {
             $.each(json, function(key, val){
                 let item = $("<li>").attr({"class": "dd-item", "data-id": val.id, "data-name": val.text});
                 let handle = $("<div>").attr({"class": "dd-handle"}).text(val.text);
+                if(val.disable == "yes") handle.attr({"style": "background: repeating-linear-gradient(45deg,#ccc,#ccc 10px,#eee 10px,#eee 20px); color: #666;"})
                 item.append(handle);
                 if(val.hasOwnProperty("submenu")){
                     item.append(showNestable(val.submenu));
