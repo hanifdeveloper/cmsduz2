@@ -25,9 +25,9 @@ class Widget {
         $this->app->subView(__CLASS__.'/breaking-news', $data);
     }
 
-    public function mainSlider() {
-        $data['mainSlider'] = $this->db->getBreakingNews();
-        $this->app->subView(__CLASS__.'/main-slider', $data);
+    public function headlineNews() {
+        $data['headlineNews'] = $this->db->getHeadlineNews();
+        $this->app->subView(__CLASS__.'/headline-news', $data);
     }
 
     public function postMain() {

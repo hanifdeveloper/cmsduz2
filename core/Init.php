@@ -67,6 +67,9 @@ class Init {
 		// Check Main Module
 		if(in_array($app->module, ['home', 'beranda', 'dashboard'])){
 			$app->module = 'main';
+		}else{
+			$module = explode('.', $app->module);
+			$app->module = $module[0];
 		}
 		
 		// Get Module

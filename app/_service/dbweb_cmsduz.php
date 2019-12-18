@@ -239,12 +239,14 @@ class dbweb_cmsduz extends Database {
     }
 
     public function getListNews($input) {
-        $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'slug' => '', 'publish' => '', 'kategori' => '', 'tag' => '', 'limit' => 5, 'order' => 'id_news'], $input);
+        $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'slug_news' => '', 'slug_category' => '', 'publish' => '', 'kategori' => '', 'headline' => '', 'tag' => '', 'limit' => 5, 'order' => 'id_news'], $input);
         $page = $params['page'];
         $cari = '%'.$params['cari'].'%';
-        $slug = '%'.$params['slug'].'%';
+        $slug_news = '%'.$params['slug_news'].'%';
+        $slug_category = '%'.$params['slug_category'].'%';
         $publish = !empty($params['publish']) ? ' AND (news.news_publish = "'.$params['publish'].'")' : '';
         $kategori = !empty($params['kategori']) ? ' AND (news.category_id = "'.$params['kategori'].'")' : '';
+        $headline = !empty($params['headline']) ? ' AND (news.headline = "'.$params['headline'].'")' : '';
         $tag = $params['tag'];
         if(!empty($tag)){
             $tag = explode(',', $tag);
@@ -252,10 +254,10 @@ class dbweb_cmsduz extends Database {
             $tag = ' AND ('.implode(' OR ', $result).')';
         }
 
-        $q_from = 'tref_news news JOIN tref_category category ON (news.category_id=category.id_category) WHERE (news.news_title LIKE ?) AND (news.news_slug LIKE ?)';
-        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from.$publish.$kategori.$tag;
-        $q_value = 'SELECT * FROM '.$q_from.$publish.$kategori.$tag.' ORDER BY '.$params['order'].' DESC';
-        $idKey = [$cari, $slug];
+        $q_from = 'tref_news news JOIN tref_category category ON (news.category_id=category.id_category) WHERE (news.news_title LIKE ?) AND (news.news_slug LIKE ?) AND (category.category_slug LIKE ?)';
+        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from.$publish.$kategori.$headline.$tag;
+        $q_value = 'SELECT * FROM '.$q_from.$publish.$kategori.$headline.$tag.' ORDER BY '.$params['order'].' DESC';
+        $idKey = [$cari, $slug_news, $slug_category];
         $limit = $params['limit'];
         $position = ($page - 1) * $limit;
         $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
@@ -332,6 +334,11 @@ class dbweb_cmsduz extends Database {
         return $result['list'];
     }
 
+    public function getHeadlineNews() {
+        $result = $this->getListNews(array('publish' => 'publish', 'headline' => 'yes', 'limit' => 5, 'order' => 'news_date'));
+        return $result['list'];
+    }
+
     public function getPopularNews() {
         $result = $this->getListNews(array('publish' => 'publish', 'limit' => 5, 'order' => 'news_viewer'));
         return $result['list'];
@@ -342,19 +349,26 @@ class dbweb_cmsduz extends Database {
         return $result['list'];
     }
 
-    public function getDetailNews($slug) {
-        $cari = explode('.', $slug);
-        $result = $this->getListNews(array('slug' => $cari[0], 'publish' => 'publish', 'limit' => 1));
-        $result = $result['list'][0];
-        $viewer = $result['news_viewer'];
-        // Update dibaca
-        $this->update('tref_news', array('news_viewer' => ($viewer + 1)), array('id_news' => $result['id_news']));
+    public function getDetailNews($slug_news) {
+        $slug_news = explode('.', $slug_news)[0];
+        $result = $this->getListNews(array('slug_news' => $slug_news, 'publish' => 'publish', 'limit' => 1));
+        if($result['count'] > 0){
+            $result = $result['list'][0];
+            $viewer = $result['news_viewer'];
+            // Update dibaca
+            $this->update('tref_news', array('news_viewer' => ($viewer + 1)), array('id_news' => $result['id_news']));
+        }else{
+            $result = [];
+        }
+        
         return $result;
     }
 
-    public function getNewsByKategori($kategori) {
-        $result = $this->getListNews(array('publish' => 'publish', 'kategori' => $kategori, 'limit' => 5));
-        return $result['list'];
+    public function getNewsByKategori($slug_category) {
+        $slug_category = explode('.', $slug_category)[0];
+        $result = $this->getListNews(array('publish' => 'publish', 'slug_category' => $slug_category, 'limit' => 5));
+        return $result;
+        // return $result['list'];
     }
 }
 

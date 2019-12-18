@@ -1,6 +1,6 @@
 <!-- Main slider -->
 <div class="main_slider">
-<?php foreach($mainSlider as $key => $value): ?>
+<?php foreach($headlineNews as $key => $value): ?>
     <!-- Slide -->
     <div class="slide">
         <a href="<?= $value['news_link']; ?>"><img src="<?= $value['news_image']; ?>" style="width: 100%; height: 400px; object-fit: cover;" alt="Post"></a>
