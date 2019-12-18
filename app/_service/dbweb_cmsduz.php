@@ -26,6 +26,10 @@ class dbweb_cmsduz extends Database {
             $result[$key] = $value;
             switch ($modul) {
 
+                case 'menu':
+                    $result[$key]['menu_link'] = $this->baseUrl.'/'.$value['menu_link'];
+                    break;
+
                 case 'kategori':
                     $result[$key]['category_link'] = $this->baseUrl.'/kategori/'.$value['category_slug'].'.html';
                     break;
@@ -74,7 +78,11 @@ class dbweb_cmsduz extends Database {
             $index = 0;
             foreach ($menu as $key => $value) {
                 if($value['menu_parent'] == $parent){
-                    $result[$index] = $value;
+                    $result[$index] = array(
+                        'id' => $value['id_menu'],
+                        'text' => $value['menu_name'],
+                        'link' => $value['menu_link'],
+                    );
                     if(checkParent($menu, $value['id_menu'])){
                         $result[$index]['submenu'] = createNavbar($menu, $value['id_menu']);
                     }
@@ -83,7 +91,9 @@ class dbweb_cmsduz extends Database {
             }
             return $result;
         }
-        return createNavbar($data['value']);
+
+        $result = $this->getCustomList($data, 'menu');
+        return createNavbar($result);
     }
 
     public function getChoicePublish() {
@@ -131,16 +141,10 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
-    // public function getConfigMenu() {
-    //     $config = $this->getDataTabel('tref_config', ['id', '1']);
-    //     $result['struktur'] = $config['navbar'];
-    //     $result['navbar'] = $this->getChoiceMenu();
-    //     return $result;
-    // }
-
     public function getFormMenu($id = '') {
         $result['form'] = $this->getDataTabel('tref_menu', ['id_menu', $id]);
         $result['title'] = empty($id) ? 'Tambah Menu' : 'Edit Menu';
+        $result['form']['menu_order'] = ($result['form']['menu_order'] == 0) ? $this->getOrderNumber('tref_menu') : $result['form']['menu_order'];
         $result['disable_choice'] = $this->getChoiceDisabled();
         return $result;
     }
@@ -199,7 +203,7 @@ class dbweb_cmsduz extends Database {
         $result['page'] = $page;
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
-        $result['list'] = $this->getCustomList($dataArray);
+        $result['list'] = $this->getCustomList($dataArray, 'menu');
         $result['menu'] = $this->getMenuNavbar();
         $result['title'] = 'Daftar Menu';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' menu';

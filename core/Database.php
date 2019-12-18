@@ -178,6 +178,17 @@ class Database {
             $data[$id] = $kode[0].'.01';
         }
         return $data;
+	}
+	
+	public function getOrderNumber($tabel){
+        set_time_limit(0);
+        $dataTabel = $this->getData('SELECT COUNT(*) AS jumlah FROM '.$tabel);
+        if($dataTabel['count'] > 0){
+            $order = intval($dataTabel['value'][0]['jumlah'])+1;
+        }else{
+            $order = 1;
+        }
+        return $order;
     }
 	
 	public function save($tabel, $arrData) {

@@ -214,6 +214,7 @@ return array(
                 'plugins/bootstrap-select/js/bootstrap-select.js',
                 'plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js',
                 'plugins/bootstrap-tagsinput/bootstrap-tagsinput.js',
+                'plugins/bootstrap-notify/bootstrap-notify.js',
                 'plugins/jquery-slimscroll/jquery.slimscroll.js',
                 'plugins/light-gallery/js/lightgallery-all.js',
                 'plugins/nestable/jquery.nestable.js',

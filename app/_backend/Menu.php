@@ -36,6 +36,21 @@ class Menu {
                 $this->app->showResponse(['status' => 'success', 'data' => $data]);
                 break;
 
+            case 'update':
+                $order = 1;
+                function getParent($data, $parent, $order, $dbase){
+                    foreach ($data as $key => $value) {
+                        $dbase->update('tref_menu', array('menu_parent' => $parent, 'menu_order' => $order++), array('id_menu' => $value['id']));
+                        if(isset($value['children'])){
+                            getParent($value['children'], $value['id'], $order, $dbase);
+                        }
+                    }
+                }
+
+                getParent($_POST['struktur'], '', $order, $this->db);
+                $this->app->showResponse(['status' => 'success', 'data' => $_POST]);
+                break;
+
             case 'save':
                 $data = $this->db->getFormMenu($_POST['id_menu']);
                 $form = $this->db->paramsFilter($data['form'], $_POST);
@@ -49,11 +64,7 @@ class Menu {
                 if($result['success'] == 0){
                     $resMsg[0]['text'] = $result['message'];
                     $this->app->showResponse(['status' => 'error', 'message' => $resMsg[0]], 404);
-                    // $this->app->showResponse(['status' => 'error', 'message' => $form], 404);
                 }else{
-                    // Update Config Menu
-                    // $config_menu = [['id' => 1], ['id' => 2], ['id' => 3], ['id' => 4], ['id' => 5]];
-                    // $this->db->update('tref_config', array('navbar' => json_encode($config_menu)), array('id' => '1'));
                     $this->app->showResponse(['status' => 'success', 'message' => $resMsg[1]]);
                 }
                 

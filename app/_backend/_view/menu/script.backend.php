@@ -15,7 +15,10 @@ Menu = {
         $(document).on("click", ".btn-form", function(event){
             event.preventDefault();
             Menu.showForm(this.id);
-            // console.log(struktur_menu.nestable("serialize"));
+        });
+        $(document).on("click", ".btn-update", function(event){
+            event.preventDefault();
+            Menu.update(struktur_menu.nestable("serialize"));
         });
         $(document).on("click", ".btn-delete", function(event){
             event.preventDefault();
@@ -46,11 +49,11 @@ Menu = {
         let showNestable = function(json){
             let list = $("<ol>").attr({"class": "dd-list"});
             $.each(json, function(key, val){
-                let item = $("<li>").attr({"class": "dd-item", "data-id": val.id});
-                let handle = $("<div>").attr({"class": "dd-handle"}).text("item "+val.id);
+                let item = $("<li>").attr({"class": "dd-item", "data-id": val.id, "data-name": val.text});
+                let handle = $("<div>").attr({"class": "dd-handle"}).text(val.text);
                 item.append(handle);
-                if(val.hasOwnProperty("children")){
-                    item.append(showNestable(val.children));
+                if(val.hasOwnProperty("submenu")){
+                    item.append(showNestable(val.submenu));
                 }
                 list.append(item);
             });
@@ -76,15 +79,10 @@ Menu = {
                             container: "body"
                         });
                         
-                        // struktur_menu.html(showNestable([{"id":1},{"id":2,"children":[{"id":3},{"id":4},{"id":5,"children":[{"id":6},{"id":7},{"id":8}]},{"id":9},{"id":10}]},{"id":11},{"id":12}]));
-                        // struktur_menu.nestable();
-                        // struktur_menu.off("change");
-                        // struktur_menu.on("change", function () {
-                        //     // var $this = $(this);
-                        //     var serializedData = window.JSON.stringify($(this).nestable("serialize"));
-                        //     console.log(serializedData);
-                        // });
-
+                        //Nestable 
+                        struktur_menu.html(showNestable(response.data.menu));
+                        struktur_menu.nestable();
+                    
                         setTimeout(function(){
                             loader.hide();
                         }, 500);
@@ -164,6 +162,19 @@ Menu = {
                 loader.hide();
                 let message = error.message;
                 swal({ title: message.title, text: message.text, type: message.type });
+            }
+        })
+    },
+    update: function(struktur){
+        App.sendData({
+            url: `${path_url}/update`,
+            data: {struktur: struktur},
+            onSuccess: function(response){
+                // console.log(response);
+                Menu.showList();
+            },
+            onError: function(error){
+                // console.log(error);
             }
         })
     },
