@@ -35,6 +35,7 @@ return array(
                 'id_album' => date('YmdHis'),
                 'id_gallery' => date('YmdHis'),
                 'id_menu' => date('YmdHis'),
+                // 'id_menu' => 0, // RESET => ALTER TABLE `tref_menu` AUTO_INCREMENT = 5;
                 'news_date' => date('Y-m-d'),
                 'datetime' => date('Y-m-d H:i:s'),
                 'news_publish' => 'unpublish',
@@ -42,6 +43,10 @@ return array(
                 'news_viewer' => 0,
                 'user_id' => 1,
                 'headline' => 'yes',
+                'menu_default' => 'no',
+                'menu_disable' => 'no',
+                'menu_parent' => '',
+                'menu_order' => 0,
             ),
             /* Response Message Configuration */
             'responseMessage' => array(
@@ -193,6 +198,7 @@ return array(
                 'plugins/bootstrap-select/css/bootstrap-select.css',
                 'plugins/bootstrap-tagsinput/bootstrap-tagsinput.css',
                 'plugins/light-gallery/css/lightgallery.css',
+                'plugins/nestable/jquery-nestable.css',
                 'plugins/sweetalert/sweetalert.css',
                 'plugins/node-waves/waves.css',
                 'plugins/waitme/waitMe.css',
@@ -210,6 +216,7 @@ return array(
                 'plugins/bootstrap-tagsinput/bootstrap-tagsinput.js',
                 'plugins/jquery-slimscroll/jquery.slimscroll.js',
                 'plugins/light-gallery/js/lightgallery-all.js',
+                'plugins/nestable/jquery.nestable.js',
                 'plugins/sweetalert/sweetalert.min.js',
                 'plugins/node-waves/waves.js',
                 'plugins/waitme/waitMe.js',

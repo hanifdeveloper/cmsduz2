@@ -60,6 +60,32 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    public function getMenuNavbar() {
+        $data = $this->getData('SELECT * FROM tref_menu ORDER BY menu_order');
+        function checkParent($menu, $id){
+            foreach ($menu as $key => $value) {
+                if($value['menu_parent'] == $id) return true;
+            }
+            return false;
+        }
+        
+        function createNavbar($menu, $parent = ''){
+            $result = [];
+            $index = 0;
+            foreach ($menu as $key => $value) {
+                if($value['menu_parent'] == $parent){
+                    $result[$index] = $value;
+                    if(checkParent($menu, $value['id_menu'])){
+                        $result[$index]['submenu'] = createNavbar($menu, $value['id_menu']);
+                    }
+                    $index++;
+                }
+            }
+            return $result;
+        }
+        return createNavbar($data['value']);
+    }
+
     public function getChoicePublish() {
         return array(
             'publish' => array('text' => 'YA'),
@@ -74,6 +100,13 @@ class dbweb_cmsduz extends Database {
         );
     }
 
+    public function getChoiceDisabled() {
+        return array(
+            'yes' => array('text' => 'YA'),
+            'no' => array('text' => 'TIDAK'),
+        );
+    }
+    
     public function getChoiceCategoryNews() {
         $data = $this->getData('SELECT * FROM tref_category ORDER BY id_category');
         $result = [];
@@ -98,9 +131,17 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    // public function getConfigMenu() {
+    //     $config = $this->getDataTabel('tref_config', ['id', '1']);
+    //     $result['struktur'] = $config['navbar'];
+    //     $result['navbar'] = $this->getChoiceMenu();
+    //     return $result;
+    // }
+
     public function getFormMenu($id = '') {
         $result['form'] = $this->getDataTabel('tref_menu', ['id_menu', $id]);
         $result['title'] = empty($id) ? 'Tambah Menu' : 'Edit Menu';
+        $result['disable_choice'] = $this->getChoiceDisabled();
         return $result;
     }
 
@@ -146,10 +187,10 @@ class dbweb_cmsduz extends Database {
         $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'limit' => 5], $input);
         $page = $params['page'];
         $cari = '%'.$params['cari'].'%';
-        $q_from = 'tref_menu WHERE (nemu_name LIKE ?)';
+        $q_from = 'tref_menu WHERE (menu_name LIKE ?)';
         $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from;
         $q_value = 'SELECT * FROM '.$q_from.' ORDER BY id_menu DESC';
-        $idKey = [$cari, $slug];
+        $idKey = [$cari];
         $limit = $params['limit'];
         $position = ($page - 1) * $limit;
         $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
@@ -159,6 +200,7 @@ class dbweb_cmsduz extends Database {
         $result['limit'] = $limit;
         $result['count'] = $dataCount['value']['jumlah'];
         $result['list'] = $this->getCustomList($dataArray);
+        $result['menu'] = $this->getMenuNavbar();
         $result['title'] = 'Daftar Menu';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' menu';
         $result['query'] = $dataArray['query'];

@@ -25,7 +25,7 @@
             -o-transition: all 0.5s;
             transition: all 0.5s
         }
-        .media-body:hover .media-action-content {
+        .media-action:hover .media-action-content {
             right: 25px;
         }
         .media-thumbnail {

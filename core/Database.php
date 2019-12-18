@@ -143,6 +143,16 @@ class Database {
 		);
 	}
 	
+	public function getTabel($tabel) {
+		set_time_limit(0);
+		$result = $this->getData('SHOW COLUMNS FROM '.$tabel);
+		$defaultValue = $this->defaultValue;
+		$dataTabel = array();
+		foreach($result['value'] as $kol){$dataTabel[$kol['Field']] = '';}
+		foreach($dataTabel as $key => $value){if(isset($defaultValue[$key])) $dataTabel[$key] = $defaultValue[$key];}
+		return $dataTabel;
+	}
+	
 	public function getDataTabel($tabel, $id = array()) {
 		set_time_limit(0);
 		if(!empty($id)){
@@ -154,15 +164,20 @@ class Database {
 			$result = $this->getTabel($tabel);
 		return $result;
 	}
-	
-	public function getTabel($tabel) {
+
+	public function getAutoKode($id, $tabel){
 		set_time_limit(0);
-		$result = $this->getData('SHOW COLUMNS FROM '.$tabel);
-		$defaultValue = $this->defaultValue;
-		$dataTabel = array();
-		foreach($result['value'] as $kol){$dataTabel[$kol['Field']] = '';}
-		foreach($dataTabel as $key => $value){if(isset($defaultValue[$key])) $dataTabel[$key] = $defaultValue[$key];}
-		return $dataTabel;
+        $data = $this->getTabel($tabel);
+        $kode = explode('.', $data[$id]);
+        $dataTabel = $this->getData('SELECT * FROM '.$tabel.' WHERE ('.$id.' LIKE ?) ORDER BY '.$id.' DESC LIMIT 1', array($kode[0].'%'));
+        if($dataTabel['count'] > 0){
+            $kode = explode('.', $dataTabel['value'][0][$id]);
+            $number = intval($kode[1])+1;
+            $data[$id] = $kode[0].'.'.sprintf('%0'.strlen($kode[1]).'s', $number);
+        }else{
+            $data[$id] = $kode[0].'.01';
+        }
+        return $data;
     }
 	
 	public function save($tabel, $arrData) {

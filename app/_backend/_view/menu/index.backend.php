@@ -5,6 +5,8 @@
     <?php $this->subView('main/header'); ?>
     <!-- Navbar -->
     <?php $this->subView('main/navbar'); ?>
+    <!-- Modal -->
+    <?php $this->subView('main/modal'); ?>
     <section class="content">
         <div class="container-fluid">
             <div class="block-header">
@@ -12,7 +14,7 @@
             </div>
 
             <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
                     <div id="project" class="card">
                         <div class="header">
                             <h2 id="page_title"></h2>
@@ -33,7 +35,7 @@
                                                     <i class="material-icons">search</i>
                                                 </span>
                                                 <div class="form-line">
-                                                    <?= BOOTSTRAP::inputText('cari', 'text', '', 'class="form-control filter-options" placeholder="Cari Kategori"'); ?>
+                                                    <?= BOOTSTRAP::inputText('cari', 'text', '', 'class="form-control filter-options" placeholder="Cari Menu"'); ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -50,27 +52,18 @@
                                 </div>
                             </div>
                             <div id="list_content" class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Nama Kategori</th>
-                                            <th>Link</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="list-content-detail">
-                                        <tr class="list-content-rows">
-                                            <th>{number}</th>
-                                            <td>{category_name}</td>
-                                            <td><a href="{category_link}" target="_blank">{category_link}</a></td>
-                                            <td>
-                                                <a href="javascript:void(0);" id="{id_category}" class="btn-form" data-toggle="tooltips" data-placement="top" title="Edit" data-original-title="Edit"><i class="material-icons">mode_edit</i></a>
-                                                <a href="javascript:void(0);" id="{id_category}" class="btn-delete" data-toggle="tooltips" data-placement="top" title="Delete" data-original-title="Delete" data-message="Yakin data {category_name} akan dihapus ?"><i class="material-icons">delete</i></a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <ul class="list-group list-content-detail">
+                                    <li class="list-group-item list-content-rows">
+                                        <div class="media-action">
+                                            <h4>{menu_name}</h4>
+                                            <small><a href="{menu_link}" target="_blank">{menu_link}</a></small>
+                                            <div class="media-action-content">
+                                                <a href="javascript:void(0);" id="{id_menu}" class="btn-form" data-toggle="tooltips" data-placement="top" title="Edit" data-original-title="Edit"><i class="material-icons">mode_edit</i></a>
+                                                <a href="javascript:void(0);" id="{id_menu}" class="btn-delete" data-toggle="tooltips" data-placement="top" title="Delete" data-original-title="Delete" data-message="Yakin data {menu_name} akan dihapus ?"><i class="material-icons">delete</i></a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                             <div id="list_paging">
                                 <ul class="pagination">
@@ -78,7 +71,42 @@
                                 </ul>
                             </div>
                         </div>
+                        <div id="data_form" class="body form_area">
+                            <div id="form_content">
+                                <label for="menu_name">Menu</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <span data-form-object="id_menu"></span>
+                                        <span data-form-object="menu_name"></span>
+                                    </div>
+                                </div>
+                                <label for="menu_link">Link</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <span data-form-object="menu_link"></span>
+                                    </div>
+                                </div>
+                                <label for="menu_disable">Sembunyikan</label>
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <span data-form-object="menu_disable"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <div class="card">
+                        <div class="header">
+                            <h2>Struktur Menu</h2>
+                        </div>
+                        <div class="body">
+                            <div class="clearfix m-b-20">
+                                <div class="dd"></div>
+                            </div>
+                        </div>
+                    </div>        
                 </div>
             </div>
         </div>

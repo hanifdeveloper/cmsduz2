@@ -77,8 +77,8 @@
                                                     <a href="javascript:void(0);" id="{id_news}" class="btn-form" data-toggle="tooltips" data-placement="top" title="Edit" data-original-title="Edit"><i class="material-icons">mode_edit</i></a>
                                                     <a href="javascript:void(0);" id="{id_news}" class="btn-delete" data-toggle="tooltips" data-placement="top" title="Delete" data-original-title="Delete" data-message="Yakin data {news_title} akan dihapus ?"><i class="material-icons">delete</i></a>
                                                 </div>
+                                                {short_content}
                                             </div>
-                                            {short_content}
                                             <div class="demo-image-copyright"><span class="badge bg-teal">{category_name}</span>&nbsp;<span class="badge bg-blue">{news_publish}</span>&nbsp;<span class="badge bg-red">{headline}</span></div>
                                         </div>
                                     </div>

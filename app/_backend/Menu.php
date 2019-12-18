@@ -27,34 +27,49 @@ class Menu {
 
         switch ($id) {
             case 'list':
-                $data = $this->db->getListCategory($_POST);
+                $data = $this->db->getListMenu($_POST);
                 $this->app->showResponse(['status' => 'success', 'data' => $data]);
                 break;
 
             case 'form':
-                $data = $this->db->getFormCategory($_POST['id']);
+                $data = $this->db->getFormMenu($_POST['id']);
                 $this->app->showResponse(['status' => 'success', 'data' => $data]);
                 break;
 
             case 'save':
-                $data = $this->db->getFormCategory($_POST['id_category']);
+                $data = $this->db->getFormMenu($_POST['id_menu']);
                 $form = $this->db->paramsFilter($data['form'], $_POST);
-                $form['category_name'] = strtoupper($form['category_name']);
-                $form['category_slug'] = FUNC::slug($form['category_name']);
+                $form['menu_name'] = ucfirst(strtolower($form['menu_name']));
+                if($form['menu_default'] == 'yes'){
+                    $this->app->showResponse(['status' => 'error', 'message' => array('title' => 'Maaf', 'text' => 'Menu Default tidak bisa diubah/dihapus', 'type' => 'error')], 404);
+                    die;
+                }
                 $resMsg = $this->resMsg['simpan'];
-                $result = $this->db->save_update('tref_category', $form);
+                $result = $this->db->save_update('tref_menu', $form);
                 if($result['success'] == 0){
                     $resMsg[0]['text'] = $result['message'];
                     $this->app->showResponse(['status' => 'error', 'message' => $resMsg[0]], 404);
+                    // $this->app->showResponse(['status' => 'error', 'message' => $form], 404);
                 }else{
+                    // Update Config Menu
+                    // $config_menu = [['id' => 1], ['id' => 2], ['id' => 3], ['id' => 4], ['id' => 5]];
+                    // $this->db->update('tref_config', array('navbar' => json_encode($config_menu)), array('id' => '1'));
                     $this->app->showResponse(['status' => 'success', 'message' => $resMsg[1]]);
                 }
                 
                 break;
 
             case 'delete':
+                $data = $this->db->getFormMenu($_POST['id']);
+                $form = $this->db->paramsFilter($data['form'], $_POST);
+                $form['menu_name'] = ucfirst(strtolower($form['menu_name']));
+                if($form['menu_default'] == 'yes'){
+                    $this->app->showResponse(['status' => 'error', 'message' => array('title' => 'Maaf', 'text' => 'Menu Default tidak bisa diubah/dihapus', 'type' => 'error')], 404);
+                    die;
+                }
+
                 $resMsg = $this->resMsg['hapus'];
-                $result = $this->db->delete('tref_category', array('id_category' => $_POST['id']));
+                $result = $this->db->delete('tref_menu', array('id_menu' => $_POST['id']));
                 if($result['success'] == 0){
                     $resMsg[0]['text'] = $result['message'];
                     $this->app->showResponse(['status' => 'error', 'message' => $resMsg[0]], 404);
