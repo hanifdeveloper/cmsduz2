@@ -30,17 +30,21 @@ return array(
             'collate' => 'utf8_general_ci',
             'persistent' => false,
             'defaultValue' => array(
+                'id_menu' => date('YmdHis'),
                 'id_category' => date('YmdHis'),
                 'id_news' => date('YmdHis'),
+                'id_comments' => date('YmdHis'),
+                'id_article' => date('YmdHis'),
                 'id_album' => date('YmdHis'),
                 'id_gallery' => date('YmdHis'),
-                'id_menu' => date('YmdHis'),
                 // 'id_menu' => 0, // RESET => ALTER TABLE `tref_menu` AUTO_INCREMENT = 5;
                 'news_date' => date('Y-m-d'),
+                'article_date' => date('Y-m-d'),
                 'datetime' => date('Y-m-d H:i:s'),
                 'news_publish' => 'unpublish',
                 'album_publish' => 'unpublish',
                 'news_viewer' => 0,
+                'article_viewer' => 0,
                 'user_id' => 1,
                 'headline' => 'yes',
                 'menu_default' => 'no',
@@ -88,6 +92,16 @@ return array(
                     'hapus' => array(
                         array('title' => 'Maaf', 'text' => 'Berita gagal dihapus', 'type' => 'error'),
                         array('title' => 'Sukses', 'text' => 'Berita telah dihapus', 'type' => 'success'),
+                    ),
+                ),
+                'artikel' => array(
+                    'simpan' => array(
+                        array('title' => 'Maaf', 'text' => 'Artikel gagal disimpan', 'type' => 'error'),
+                        array('title' => 'Sukses', 'text' => 'Artikel telah disimpan', 'type' => 'success'),
+                    ),
+                    'hapus' => array(
+                        array('title' => 'Maaf', 'text' => 'Artikel gagal dihapus', 'type' => 'error'),
+                        array('title' => 'Sukses', 'text' => 'Artikel telah dihapus', 'type' => 'success'),
                     ),
                 ),
                 'album' => array(
