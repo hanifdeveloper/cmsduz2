@@ -6,7 +6,7 @@
                 <?php $widget->about(); ?>
             </div>
             <div class="col col_4_of_12">
-                <?php $widget->postRecent(); ?>
+                <?php $widget->postPopular(); ?>
             </div>
             <div class="col col_4_of_12">
                 <?php $widget->postTimeline(); ?>

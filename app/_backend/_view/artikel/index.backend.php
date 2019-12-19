@@ -38,14 +38,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <label for="kategori">Kategori</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    <?= BOOTSTRAP::inputSelect('kategori', $category_choice, '', 'class="form-control show-tick filter-options" data-live-search="true"'); ?>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div id="page_query" class="col-md-12"></div>
                                     </div>
                                     <?= BOOTSTRAP::inputKey('page', 1); ?>
@@ -61,25 +53,19 @@
                             <div id="list_content">
                                 <div class="list-content-detail">
                                     <div class="media list-content-rows">
-                                        <div class="media-left">
-                                            <div class="media-thumbnail">
-                                                <a href="{news_image}" data-sub-html="{news_title}" class="image_list">
-                                                    <img class="media-object" src="{news_image}">
-                                                </a>
-                                            </div>
-                                        </div>
                                         <div class="media-body">
                                             <div class="media-action">
                                                 <h4 class="media-heading">
-                                                    <a href="{news_link}" target="_blank">{news_title}</a>
+                                                    <a href="{article_link}" target="_blank">{article_title}</a>
                                                 </h4>
+                                                <div><strong><small>Tanggal: {article_date}</small></strong></div>
                                                 <div class="media-action-content">
-                                                    <a href="javascript:void(0);" id="{id_news}" class="btn-form" data-toggle="tooltips" data-placement="top" title="Edit" data-original-title="Edit"><i class="material-icons">mode_edit</i></a>
-                                                    <a href="javascript:void(0);" id="{id_news}" class="btn-delete" data-toggle="tooltips" data-placement="top" title="Delete" data-original-title="Delete" data-message="Yakin data {news_title} akan dihapus ?"><i class="material-icons">delete</i></a>
+                                                    <a href="javascript:void(0);" id="{id_article}" class="btn-form" data-toggle="tooltips" data-placement="top" title="Edit" data-original-title="Edit"><i class="material-icons">mode_edit</i></a>
+                                                    <a href="javascript:void(0);" id="{id_article}" class="btn-delete" data-toggle="tooltips" data-placement="top" title="Delete" data-original-title="Delete" data-message="Yakin data {article_title} akan dihapus ?"><i class="material-icons">delete</i></a>
                                                 </div>
                                                 {short_content}
                                             </div>
-                                            <div class="demo-image-copyright"><span class="badge bg-teal">{category_name}</span>&nbsp;<span class="badge bg-blue">{news_publish}</span>&nbsp;<span class="badge bg-red">{headline}</span></div>
+                                            <div class="demo-image-copyright" style="font-style: normal;"><strong>Link : {article_link}</strong></div>
                                         </div>
                                     </div>
                                 </div>
@@ -96,62 +82,27 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <span data-form-object="news_content"></span>
+                                                <span data-form-object="article_content"></span>
                                             </div>
                                         </div>
-                                        <div class="col-md-7">
-                                            <label for="news_title">Judul</label>
+                                        <div class="col-md-8">
+                                            <label for="article_title">Judul</label>
                                             <div class="form-group">
                                                 <div class="form-line">
-                                                    <span data-form-object="id_news"></span>
-                                                    <span data-form-object="news_title"></span>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label for="category_id">Kategori</label>
-                                                    <div class="form-group">
-                                                        <div class="form-line">
-                                                            <span data-form-object="category_id"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label for="news_date">Tanggal Posting</label>
-                                                    
-                                                    <div class="input-group">
-                                                        <div class="form-line">
-                                                            <span data-form-object="news_date"></span>
-                                                        </div>
-                                                        <span class="input-group-addon">
-                                                            <i class="material-icons">date_range</i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <label for="news_publish">Publish</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    <span data-form-object="news_publish"></span>
-                                                </div>
-                                            </div>
-                                            <label for="headline">Headline</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    <span data-form-object="headline"></span>
-                                                </div>
-                                            </div>
-                                            <label for="news_tag">Tag</label>
-                                            <div class="form-group">
-                                                <div class="form-line">
-                                                    <span data-form-object="news_tag"></span>
+                                                    <span data-form-object="id_article"></span>
+                                                    <span data-form-object="article_title"></span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
-                                            <label for="news_image">Gambar</label>
-                                            <div class="form-group">
-                                                <span data-form-object="news_image"></span>
+                                        <div class="col-md-4">
+                                            <label for="article_date">Tanggal Posting</label>
+                                            <div class="input-group">
+                                                <div class="form-line">
+                                                    <span data-form-object="article_date"></span>
+                                                </div>
+                                                <span class="input-group-addon">
+                                                    <i class="material-icons">date_range</i>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -169,5 +120,5 @@
 
     <?= $this->jsPath; ?>
     <script src="<?= $this->adminUrl; ?>/script"></script>
-    <script src="<?= $this->adminUrl; ?>/berita/script"></script>
+    <script src="<?= $this->adminUrl; ?>/artikel/script"></script>
 </body>

@@ -24,6 +24,7 @@ class Berita {
                 }else{
                     // Check Kategori Berita
                     $category = $this->db->getNewsByKategori($method);
+                    // $this->app->debugResponse($category); die;
                     if($category['count'] > 0){
                         if(count($params) > 0){
                             $this->detail($params[0]);
@@ -31,8 +32,7 @@ class Berita {
                             $this->app->debugResponse($category['list']);
                         }
                     }else{
-                        $this->app->module = 'main';
-                        $this->app->showView('error', array('error_message' => 'Halaman tidak ditemukan ...'));
+                        $this->errorPage();
                     }
                 }
 				break;
@@ -45,9 +45,16 @@ class Berita {
     
     private function detail($berita) {
         $data = $this->db->getDetailNews($berita);
+        if(empty($data)) $this->errorPage();
         // $this->app->debugResponse($data); die;
         $this->app->web_title = $data['news_title'];
         $this->app->showView('detail', $data);
+    }
+
+    private function errorPage() {
+        $this->app->module = 'main';
+        $this->app->showView('error', array('error_message' => 'Halaman tidak ditemukan ...'));
+        die;
     }
 
 }

@@ -45,6 +45,13 @@ class dbweb_cmsduz extends Database {
                     $result[$key]['headline'] = ($value['headline'] == 'yes') ? 'Headline News' : '';
                     break;
 
+                case 'artikel':
+                    $result[$key]['short_content'] = substr(strip_tags($value['article_content']), 0, 300).'...';
+                    $result[$key]['article_link'] = $this->baseUrl.'/halaman/'.$value['article_slug'].'.html';
+                    $result[$key]['article_date'] = FUNC::tanggal($value['article_date'], 'long_date');
+                    $result[$key]['moments'] = FUNC::moments($value['datetime']);
+                    break;
+
                 case 'album':
                     $result[$key]['album_link'] = $this->baseUrl.'/album/'.$value['album_slug'].'.html';
                     $result[$key]['album_image'] = $this->getLinkImage('/album/', $value['album_image'], 'no-image.png');
@@ -168,6 +175,12 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    public function getFormArticle($id = '') {
+        $result['form'] = $this->getDataTabel('tref_article', ['id_article', $id]);
+        $result['title'] = empty($id) ? 'Tambah Artikel' : 'Edit Artikel';
+        return $result;
+    }
+
     public function getFormAlbum($id = '') {
         $result['form'] = $this->getDataTabel('tref_album', ['id_album', $id]);
         $result['title'] = empty($id) ? 'Tambah Album' : 'Edit Album';
@@ -270,7 +283,32 @@ class dbweb_cmsduz extends Database {
         $result['title'] = 'Daftar Berita';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' berita';
         $result['query'] = $dataArray['query'];
-        // $result['query'] = '';
+        $result['query'] = '';
+        return $result;
+    }
+
+    public function getListArticle($input) {
+        $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'slug_article' => '', 'limit' => 5, 'order' => 'id_article'], $input);
+        $page = $params['page'];
+        $cari = '%'.$params['cari'].'%';
+        $slug_article = '%'.$params['slug_article'].'%';
+        $q_from = 'tref_article article WHERE (article.article_title LIKE ?) AND (article.article_slug LIKE ?)';
+        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from;
+        $q_value = 'SELECT * FROM '.$q_from.' ORDER BY '.$params['order'].' DESC';
+        $idKey = [$cari, $slug_article];
+        $limit = $params['limit'];
+        $position = ($page - 1) * $limit;
+        $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
+        $dataArray = $this->getData($q_value.' LIMIT '.$position.','.$limit, $idKey);
+        $result['number'] = $position + 1;
+        $result['page'] = $page;
+        $result['limit'] = $limit;
+        $result['count'] = $dataCount['value']['jumlah'];
+        $result['list'] = $this->getCustomList($dataArray, 'artikel');
+        $result['title'] = 'Daftar Artikel';
+        $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' artikel';
+        $result['query'] = $dataArray['query'];
+        $result['query'] = '';
         return $result;
     }
 
@@ -345,7 +383,7 @@ class dbweb_cmsduz extends Database {
     }
 
     public function getRelatedNews($tag) {
-        $result = $this->getListNews(array('publish' => 'publish', 'tag' => implode(',', $tag), 'limit' => 5));
+        $result = $this->getListNews(array('publish' => 'publish', 'tag' => implode(',', $tag), 'limit' => 3, 'order' => 'RAND()'));
         return $result['list'];
     }
 
@@ -368,7 +406,21 @@ class dbweb_cmsduz extends Database {
         $slug_category = explode('.', $slug_category)[0];
         $result = $this->getListNews(array('publish' => 'publish', 'slug_category' => $slug_category, 'limit' => 5));
         return $result;
-        // return $result['list'];
+    }
+
+    public function getDetailArticle($slug_article) {
+        $slug_article = explode('.', $slug_article)[0];
+        $result = $this->getListArticle(array('slug_article' => $slug_article, 'publish' => 'publish', 'limit' => 1));
+        if($result['count'] > 0){
+            $result = $result['list'][0];
+            $viewer = $result['article_viewer'];
+            // Update dibaca
+            $this->update('tref_article', array('article_viewer' => ($viewer + 1)), array('id_article' => $result['id_article']));
+        }else{
+            $result = [];
+        }
+        
+        return $result;
     }
 }
 

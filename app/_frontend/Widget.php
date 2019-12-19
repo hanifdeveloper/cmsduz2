@@ -30,6 +30,21 @@ class Widget {
         $this->app->subView(__CLASS__.'/headline-news', $data);
     }
 
+    public function relatedNews($tags) {
+        $data['relatedNews'] = $this->db->getRelatedNews($tags);
+        $this->app->subView(__CLASS__.'/related-news', $data);
+    }
+
+    public function postPopular() {
+        $data['popularNews'] = $this->db->getPopularNews();
+        $this->app->subView(__CLASS__.'/post-popular', $data);
+    }
+
+    public function postTimeline() {
+        // $data['breakingNews'] = $this->db->getBreakingNews();
+        $this->app->subView(__CLASS__.'/post-timeline');
+    }
+
     public function postMain() {
         $this->app->subView(__CLASS__.'/post-main');
     }
@@ -44,14 +59,6 @@ class Widget {
 
     public function postGridRows() {
         $this->app->subView(__CLASS__.'/post-grid-rows');
-    }
-
-    public function postRecent() {
-        $this->app->subView(__CLASS__.'/post-recent');
-    }
-
-    public function postTimeline() {
-        $this->app->subView(__CLASS__.'/post-timeline');
     }
 
     public function banner468() {
@@ -70,12 +77,17 @@ class Widget {
         $this->app->subView(__CLASS__.'/form-search');
     }
 
-    public function tagList() {
-        $this->app->subView(__CLASS__.'/tag-list');
+    public function tagList($tags) {
+        $data['tags'] = $tags;
+        $this->app->subView(__CLASS__.'/tag-list', $data);
     }
 
     public function about() {
         $this->app->subView(__CLASS__.'/about');
+    }
+
+    public function comments() {
+        $this->app->subView(__CLASS__.'/comments');
     }
 
 }
