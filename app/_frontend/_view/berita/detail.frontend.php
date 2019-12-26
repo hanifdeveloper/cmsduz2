@@ -27,7 +27,7 @@
                             <h1><?= $news_title; ?></h1>
                             <div class="entry_meta">
                                 <span><i class="fa fa-clock-o"></i> <?= $moments; ?></span>
-                                <span><i class="fa fa-commenting-o"></i> 16 comments</span>
+                                <span><i class="fa fa-commenting-o"></i> <?= $comments; ?> comments</span>
                                 <span><i class="fa fa-eye"></i> <?= $news_viewer; ?> views</span>
                                 <span><i class="fa fa-user"></i> Administrator</span>
                             </div>
@@ -73,7 +73,7 @@
                         <!-- Related News -->
                         <?php $widget->relatedNews($news_tag); ?>
                         <!-- Comments -->
-                        <?php $widget->comments(); ?>
+                        <?php $widget->comment($news_slug); ?>
                     </article>
                 </div>                    
                 <!-- Sidebar area -->

@@ -116,7 +116,7 @@ class Database {
 	}
 
 	public function paramsFilter($params, $input) {
-		foreach ($input as $key => $value) { if(isset($input[$key])) $params[$key] = $input[$key]; }
+		foreach ($params as $key => $value) { if(isset($input[$key])) $params[$key] = $input[$key]; }
 		return $params;
 	}
 

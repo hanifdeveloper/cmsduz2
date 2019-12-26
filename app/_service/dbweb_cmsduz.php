@@ -52,6 +52,10 @@ class dbweb_cmsduz extends Database {
                     $result[$key]['moments'] = FUNC::moments($value['datetime']);
                     break;
 
+                case 'komentar':
+                    $result[$key]['comment_date'] = FUNC::tanggal($value['datetime'], 'long_date_time');
+                    break;
+
                 case 'album':
                     $result[$key]['album_link'] = $this->baseUrl.'/album/'.$value['album_slug'].'.html';
                     $result[$key]['album_image'] = $this->getLinkImage('/album/', $value['album_image'], 'no-image.png');
@@ -181,6 +185,12 @@ class dbweb_cmsduz extends Database {
         return $result;
     }
 
+    public function getFormComment($id = '') {
+        $result['form'] = $this->getDataTabel('tref_comment', ['id_comment', $id]);
+        $result['title'] = empty($id) ? 'Tambah Komentar' : 'Edit Komentar';
+        return $result;
+    }
+
     public function getFormAlbum($id = '') {
         $result['form'] = $this->getDataTabel('tref_album', ['id_album', $id]);
         $result['title'] = empty($id) ? 'Tambah Album' : 'Edit Album';
@@ -255,10 +265,11 @@ class dbweb_cmsduz extends Database {
         $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'slug_news' => '', 'slug_category' => '', 'publish' => '', 'kategori' => '', 'headline' => '', 'tag' => '', 'limit' => 5, 'order' => 'id_news'], $input);
         $page = $params['page'];
         $cari = '%'.$params['cari'].'%';
+        $kategori = '%'.$params['kategori'].'%';
         $slug_news = '%'.$params['slug_news'].'%';
         $slug_category = '%'.$params['slug_category'].'%';
         $publish = !empty($params['publish']) ? ' AND (news.news_publish = "'.$params['publish'].'")' : '';
-        $kategori = !empty($params['kategori']) ? ' AND (news.category_id = "'.$params['kategori'].'")' : '';
+        // $kategori = !empty($params['kategori']) ? ' AND (news.category_id = "'.$params['kategori'].'")' : '';
         $headline = !empty($params['headline']) ? ' AND (news.headline = "'.$params['headline'].'")' : '';
         $tag = $params['tag'];
         if(!empty($tag)){
@@ -267,10 +278,13 @@ class dbweb_cmsduz extends Database {
             $tag = ' AND ('.implode(' OR ', $result).')';
         }
 
-        $q_from = 'tref_news news JOIN tref_category category ON (news.category_id=category.id_category) WHERE (news.news_title LIKE ?) AND (news.news_slug LIKE ?) AND (category.category_slug LIKE ?)';
-        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from.$publish.$kategori.$headline.$tag;
-        $q_value = 'SELECT * FROM '.$q_from.$publish.$kategori.$headline.$tag.' ORDER BY '.$params['order'].' DESC';
-        $idKey = [$cari, $slug_news, $slug_category];
+        $q_from = 'tref_news news 
+                    JOIN tref_category category ON (news.category_id=category.id_category) 
+                    LEFT JOIN tref_comment comment ON (comment.news_id=news.id_news)
+                    WHERE (news.news_title LIKE ?) AND (news.category_id LIKE ?) AND (news.news_slug LIKE ?) AND (category.category_slug LIKE ?)';
+        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from.$publish.$headline.$tag;
+        $q_value = 'SELECT news.*, category.*, COUNT(comment.id_comment) AS comments FROM '.$q_from.$publish.$headline.$tag.' GROUP BY news.id_news ORDER BY '.$params['order'].' DESC';
+        $idKey = [$cari, $kategori, $slug_news, $slug_category];
         $limit = $params['limit'];
         $position = ($page - 1) * $limit;
         $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
@@ -283,7 +297,7 @@ class dbweb_cmsduz extends Database {
         $result['title'] = 'Daftar Berita';
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' berita';
         $result['query'] = $dataArray['query'];
-        $result['query'] = '';
+        // $result['query'] = '';
         return $result;
     }
 
@@ -309,6 +323,35 @@ class dbweb_cmsduz extends Database {
         $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' artikel';
         $result['query'] = $dataArray['query'];
         $result['query'] = '';
+        return $result;
+    }
+
+    public function getListComment($input) {
+        $params = $this->paramsFilter(['page' => 1, 'cari' => '', 'news' => '', 'publish' => '', 'limit' => 10, 'order' => 'id_comment'], $input);
+        $page = $params['page'];
+        $cari = '%'.$params['cari'].'%';
+        $news = '%'.$params['news'].'%';
+        $publish = !empty($params['publish']) ? ' AND (comment.comment_publish = "'.$params['publish'].'")' : '';
+        $q_from = 'tref_news news 
+                    JOIN tref_category category ON (news.category_id=category.id_category) 
+                    JOIN tref_comment comment ON (comment.news_id=news.id_news)
+                    WHERE (news.news_title LIKE ?) AND (comment.comment_content LIKE ?) AND (news.news_slug LIKE ?)';
+        $q_count = 'SELECT COUNT(*) AS jumlah FROM '.$q_from.$publish;
+        $q_value = 'SELECT news.news_title, category.category_name, comment.* FROM '.$q_from.$publish.' ORDER BY '.$params['order'].' DESC';
+        $idKey = [$cari, $cari, $news];
+        $limit = $params['limit'];
+        $position = ($page - 1) * $limit;
+        $dataCount = $this->getData($q_count, $idKey, self::SINGLE_DATA);
+        $dataArray = $this->getData($q_value.' LIMIT '.$position.','.$limit, $idKey);
+        $result['number'] = $position + 1;
+        $result['page'] = $page;
+        $result['limit'] = $limit;
+        $result['count'] = $dataCount['value']['jumlah'];
+        $result['list'] = $this->getCustomList($dataArray, 'komentar');
+        $result['title'] = 'Daftar Komentar';
+        $result['label'] = 'Jumlah Data : '.FUNC::ribuan($result['count']).' komentar';
+        $result['query'] = $dataArray['query'];
+        // $result['query'] = '';
         return $result;
     }
 
@@ -387,6 +430,16 @@ class dbweb_cmsduz extends Database {
         return $result['list'];
     }
 
+    public function getCommentNews($slug_news) {
+        $form = $this->getDataTabel('tref_news', ['news_slug', $slug_news]);
+        $data = $this->getListComment(array('slug_news' => $slug_news, 'publish' => 'unpublish', 'limit' => 5));
+        return array(
+            'news_id' => $form['id_news'],
+            'count' => $data['count'],
+            'list' => $data['list'],
+        );
+    }
+
     public function getDetailNews($slug_news) {
         $slug_news = explode('.', $slug_news)[0];
         $result = $this->getListNews(array('slug_news' => $slug_news, 'publish' => 'publish', 'limit' => 1));
@@ -422,6 +475,7 @@ class dbweb_cmsduz extends Database {
         
         return $result;
     }
+
 }
 
 ?>

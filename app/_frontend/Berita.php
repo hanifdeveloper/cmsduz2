@@ -42,12 +42,30 @@ class Berita {
     public function index() {
         $this->app->showView('index');
     }
+
+    public function comment() {
+        if(!$_POST){
+            echo '<meta http-equiv="refresh" content="0;URL=\''.$this->app->baseUrl.'\'" />';
+            die;
+        }
+
+        $data = $this->db->getFormComment();
+        $form = $this->db->paramsFilter($data['form'], $_POST);
+        $result = $this->db->save_update('tref_comment', $form);
+        if($result['success'] == 0){
+            // echo $result['message'];
+            $this->app->setSession('RESPONSE_MESSAGE', '<div class="alert alert_red"><i class="fa fa-exclamation-triangle"></i><p>Oops! Your comment failed to post</p></div>');
+        }else{
+            $this->app->setSession('RESPONSE_MESSAGE', '<div class="alert alert_green"><i class="fa fa-thumbs-up"></i><p>Your comment has been sent</p></div>');
+        }
+        echo '<meta http-equiv="refresh" content="0;URL=\''.$_POST['news_url'].'\'" />';
+    }
     
     private function detail($berita) {
         $data = $this->db->getDetailNews($berita);
         if(empty($data)) $this->errorPage();
         // $this->app->debugResponse($data); die;
-        $this->app->web_title = $data['news_title'];
+        $this->app->web_title = strtoupper($data['news_title']);
         $this->app->showView('detail', $data);
     }
 

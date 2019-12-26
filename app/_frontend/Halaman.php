@@ -35,7 +35,7 @@ class Halaman {
         $data = $this->db->getDetailArticle($article);
         if(empty($data)) $this->errorPage();
         // $this->app->debugResponse($data); die;
-        $this->app->web_title = $data['article_title'];
+        $this->app->web_title = strtoupper($data['article_title']);
         $this->app->showView('detail', $data);
     }
 

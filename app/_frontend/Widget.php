@@ -86,8 +86,12 @@ class Widget {
         $this->app->subView(__CLASS__.'/about');
     }
 
-    public function comments() {
-        $this->app->subView(__CLASS__.'/comments');
+    public function comment($slug_news) {
+        $data['commentNews'] = $this->db->getCommentNews($slug_news);
+        $data['responseMessage'] = $this->app->getSession('RESPONSE_MESSAGE');
+        // $this->app->debugResponse($data); die;
+        $this->app->setSession('RESPONSE_MESSAGE', '');
+        $this->app->subView(__CLASS__.'/comment', $data);
     }
 
 }
